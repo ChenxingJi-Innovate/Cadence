@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+
+html, body {
+  background: #0A0A0A;
+  color: #E5E5E5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "tnum", "ss01", "cv11";
+}
+
+::selection { background: #00E5FF; color: #0A0A0A; }
+
+textarea::placeholder, input::placeholder { color: #525252; font-family: ui-monospace, SFMono-Regular, monospace; }
+
+/* Subtle blueprint grid background — visible only behind hero */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: -1px -1px;
+}
+
+/* Industrial data table */
+.cad-table { width: 100%; border-collapse: collapse; }
+.cad-table th, .cad-table td {
+  padding: 7px 12px;
+  text-align: left;
+  white-space: nowrap;
+  border-right: 1px solid #1A1A1A;
+}
+.cad-table th:last-child, .cad-table td:last-child { border-right: 0; }
+.cad-table th {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #737373;
+  border-bottom: 1px solid #2A2A2A;
+  background: #111111;
+  position: sticky; top: 0;
+}
+.cad-table td {
+  font-size: 12px;
+  color: #D4D4D4;
+  border-bottom: 1px solid #161616;
+  font-feature-settings: "tnum";
+}
+.cad-table tbody tr:hover { background: #141414; }
+.cad-table td.num { text-align: right; font-family: ui-monospace, SFMono-Regular, monospace; color: #00E5FF; }
+
+/* Industrial scrollbars */
+.scroll-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+.scroll-thin::-webkit-scrollbar-thumb { background: #2A2A2A; }
+.scroll-thin::-webkit-scrollbar-thumb:hover { background: #3D3D3D; }
+.scroll-thin::-webkit-scrollbar-track { background: transparent; }
+
+/* CRT-style scan line behind the SQL panel (very subtle) */
+.scanline::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,229,255,0) 0%, rgba(0,229,255,0.03) 50%, rgba(0,229,255,0) 100%);
+  pointer-events: none;
+  height: 80px;
+  animation: scan 8s linear infinite;
+}

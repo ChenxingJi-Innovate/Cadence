@@ -1,0 +1,25 @@
+artist_external_id,artist_name,platform,snapshot_dt,followers,engagement_rate,posts_last_30d,top_country
+EXT-A001,Lia Park,tiktok,2026-04-25,820000,0.094,22,KR
+EXT-A001,Lia Park,instagram,2026-04-25,410000,0.062,14,KR
+EXT-A001,Lia Park,youtube,2026-04-25,185000,0.038,4,KR
+EXT-A002,BeatKid,tiktok,2026-04-25,3140000,0.071,18,US
+EXT-A002,BeatKid,instagram,2026-04-25,2680000,0.041,11,US
+EXT-A002,BeatKid,youtube,2026-04-25,1820000,0.029,6,US
+EXT-A003,Indah Sari,tiktok,2026-04-25,52000,0.123,31,ID
+EXT-A003,Indah Sari,instagram,2026-04-25,28000,0.087,19,ID
+EXT-A003,Indah Sari,youtube,2026-04-25,9400,0.052,2,ID
+EXT-A004,Marina Costa,tiktok,2026-04-25,5820000,0.058,12,BR
+EXT-A004,Marina Costa,instagram,2026-04-25,7140000,0.034,9,BR
+EXT-A004,Marina Costa,youtube,2026-04-25,3210000,0.022,3,BR
+EXT-A005,Aarav,tiktok,2026-04-25,8200,0.156,28,IN
+EXT-A005,Aarav,instagram,2026-04-25,4100,0.098,21,IN
+EXT-A005,Aarav,youtube,2026-04-25,1200,0.041,1,IN
+EXT-A006,Nova Lin,tiktok,2026-04-25,690000,0.082,16,US
+EXT-A006,Nova Lin,instagram,2026-04-25,540000,0.055,12,US
+EXT-A006,Nova Lin,youtube,2026-04-25,220000,0.031,5,US
+EXT-A007,Yuki Hoshino,tiktok,2026-04-25,71000,0.108,24,JP
+EXT-A007,Yuki Hoshino,instagram,2026-04-25,38000,0.073,17,JP
+EXT-A007,Yuki Hoshino,youtube,2026-04-25,12500,0.044,3,JP
+EXT-A008,Carmen Vega,tiktok,2026-04-25,4280000,0.066,14,MX
+EXT-A008,Carmen Vega,instagram,2026-04-25,5610000,0.038,10,MX
+EXT-A008,Carmen Vega,youtube,2026-04-25,2470000,0.025,4,MX

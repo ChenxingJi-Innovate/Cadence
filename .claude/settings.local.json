@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3001)",
+      "Bash(curl -s -o /dev/null -w \"sample.csv HTTP %{http_code}\\\\n\" http://localhost:3001/sample.csv)",
+      "Bash(curl -s -o /dev/null -w \"sql-wasm.wasm HTTP %{http_code}\\\\n\" http://localhost:3001/sql-wasm.wasm)",
+      "Bash(md5 public/sql-wasm.wasm node_modules/sql.js/dist/sql-wasm.wasm)",
+      "Bash(curl -sI http://localhost:3001/sql-wasm.wasm)",
+      "Bash(ps -p 3940 -o command=)",
+      "Bash(curl -s -o /dev/null -w \"GET / HTTP %{http_code}\\\\n\" http://localhost:3001/)",
+      "Bash(curl -s -o /dev/null -w \"POST /api/url-ingest HTTP %{http_code}\\\\n\" -X POST -H 'Content-Type: application/json' -d '{\"url\":\"not-a-url\"}' http://localhost:3001/api/url-ingest)",
+      "Bash(curl -s -o /dev/null -w \"POST /api/profile HTTP %{http_code}\\\\n\" -X POST -H 'Content-Type: application/json' -d '{}' http://localhost:3001/api/profile)",
+      "Bash(curl -s -o /dev/null -w \"POST /api/nl2sql HTTP %{http_code}\\\\n\" -X POST -H 'Content-Type: application/json' -d '{}' http://localhost:3001/api/nl2sql)",
+      "Bash(curl -s -o /dev/null -w \"POST /api/url-ingest HTTP %{http_code}\\\\n\" -X POST -H 'Content-Type: application/json' -d '{}' http://localhost:3001/api/url-ingest)",
+      "Bash(curl -sI -A \"Mozilla/5.0 \\(Cadence/0.1\\)\" -L \"https://kworb.net/spotify/country/global_daily.html\")",
+      "Bash(curl -s -A \"Mozilla/5.0 \\(Cadence/0.1\\)\" -L \"https://kworb.net/spotify/country/global_daily.html\")",
+      "Bash(curl -s -o /dev/null -w \"url-ingest 400 check HTTP %{http_code}\\\\n\" -X POST -H 'Content-Type: application/json' -d '{}' http://localhost:3001/api/url-ingest)"
+    ]
+  }
+}
