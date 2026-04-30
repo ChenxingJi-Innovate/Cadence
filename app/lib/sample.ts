@@ -426,6 +426,46 @@ SELECT
   ) AS growth_pct_wow
 FROM base b;`
 
+  // Intentionally planted dirty data so the CLEAN-stage scanner has something
+  // to find. Without this every check passes and the scan looks decorative.
+  // Real warehouses always have *some* drift; we mimic the most common shapes:
+  //   - 5  plays with NULL country         → "NULL country" WARN (1 ≤ n < 10)
+  //   - 3  dim_track rows with NULL artist_id → "NULL artist_id" WARN
+  //   - 2  orphan plays referencing a track_id that doesn't exist in dim_track
+  //                                        → "orphan track_id" FAIL
+  // We don't try to plant duplicate PKs because those tables enforce
+  // PRIMARY KEY uniqueness at the engine level — the insert would error out.
+  // Expected scan result: 21 PASS · 2 WARN · 1 FAIL.
+  const dirtyInjections = `
+-- ─────────────────────────────────────────────────────────
+-- Intentionally planted drift (so the CLEAN scanner finds real issues)
+-- ─────────────────────────────────────────────────────────
+UPDATE dwd_track_play_event
+SET country = NULL
+WHERE event_id IN (
+  SELECT event_id FROM dwd_track_play_event
+  WHERE country IS NOT NULL
+  ORDER BY event_id LIMIT 5
+);
+
+UPDATE dim_track
+SET artist_id = NULL
+WHERE track_id IN (
+  SELECT track_id FROM dim_track
+  WHERE artist_id IS NOT NULL
+  ORDER BY track_id LIMIT 3
+);
+
+INSERT INTO dwd_track_play_event
+  (event_id, dt, event_time, user_id, device_id, track_id, sound_id,
+   source, country, os, app_version, ms_played, completion_pct, is_skip)
+VALUES
+  (9000001, '2026-04-25', '2026-04-25 12:00:00', 99001, 'D-99001', 99999, NULL,
+   'for_you', 'US', 'iOS', '36.0', 120000, 0.85, 0),
+  (9000002, '2026-04-25', '2026-04-25 12:01:00', 99002, 'D-99002', 99998, NULL,
+   'search', 'JP', 'Android', '36.0', 60000, 0.45, 0);
+`
+
   return [
     geoInserts,
     artistInserts,
@@ -436,6 +476,7 @@ FROM base b;`
     videoInserts,
     dwsRollup,
     adsRollup,
+    dirtyInjections,
   ].join('\n\n')
 }
 
@@ -455,15 +496,13 @@ export function getSeedSql(): string {
 // "Top 10" query returns 4 rows and looks broken. Phrasing without explicit
 // caps lets the LLM pick a sensible LIMIT for the data on hand.
 export const SAMPLE_QUESTIONS = [
-  '过去 30 天每个国家的总播放量,优先市场打 priority 标签,按播放量降序',
-  'Emerging-tier artists in APAC ranked by week-over-week growth',
-  '7-day rolling plays per artist over the last 30 days',
-  '哪些 sound 的视频创作率最高 (videos / plays),最近 14 天',
-  'Tracks with highest skip rate in the last 14 days, broken down by source',
-  'Artists ranked within their tier by D7 plays, latest dt only',
-  '把 artist_social_snapshot 和 dim_artist JOIN,看每个 tier 在 tiktok 上的平均粉丝数和互动率',
-  '最近 7 天每个 source (for_you / search / profile) 的播放分布',
-  'Top 3 tracks by completion rate in each country, last 14 days',
+  '全球艺人 7 日播放量排行,仅取最新日期',
+  'Artists ranked by week-over-week growth rate, latest dt only',
+  '最近 30 天播放量最高的前 10 首曲目,按总量降序',
+  'Which tracks appeared on chart every day for at least 14 consecutive days?',
+  '哪位艺人最近 28 天的单日峰值播放量最高',
+  '7-day vs 28-day play ratio per artist — who is accelerating?',
+  'Top 5 artists by total accumulated plays over the last 60 days',
 ]
 
 // Bundled CSV used by the "load sample CSV" button on the COLLECT stage.

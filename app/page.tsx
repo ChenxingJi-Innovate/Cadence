@@ -61,7 +61,7 @@ const i18n = {
 
     // COLLECT
     collect_title: '01 / COLLECT — 数据采集',
-    collect_sub: '不是顺序流程,是三个独立的工具,任选其一或都不选都不影响下游。两类用途不要混:【入库二选一】内置 seed (默认开启) / CSV 上传 (可选附加表) —— 这两条决定 QUERY 阶段能查到什么。【独立工具】URL 抽取 —— 抓页面生成 NL→SQL 训练对,导出 JSONL 用来微调模型,不进数据库,跟 QUERY 无关。所有路径都对齐同一份不可变 DDL (4 层 10 表)。',
+    collect_sub: '不是流水线,是三块各自独立的功能。【数据库】内置 seed 永远在,CSV 是可选叠加 (不是替换),两者一起决定 QUERY 能查到什么。【训练数据导出】URL 抽取完全独立,产物是 JSONL 文件,不进数据库,跟 QUERY 没关系。三块都对齐同一份不可变 DDL (4 层 10 表)。',
     collect_loaded: '已加载',
     collect_layers: '4 层数仓',
     collect_layers_sub: 'DIM · DWD · DWS · ADS',
@@ -72,9 +72,12 @@ const i18n = {
     src_url_default: '默认: Kworb · Spotify Daily Global',
     src_url_set: '当前 URL',
     schema_immutable_note: '此 DDL 在 demo 中固定,所有 NL→SQL 都对它生成。生产环境替换时同步改 nl2sql 的 prompt。',
-    group_db: 'A · 数据入库 (二选一,决定 QUERY 阶段能查到什么)',
-    group_db_or: '或',
-    group_training: 'B · 训练数据导出 (独立工具,不进数据库,跟 QUERY 无关)',
+    group_db: 'A · 数据库内容 (左边永远在 + 右边可选叠加)',
+    group_db_plus: '+',
+    group_training: 'B · 训练数据导出 (独立功能,产物是 JSONL,不进数据库)',
+    badge_always_on: '常开 · 不可关',
+    badge_optional: '可选 · 叠加',
+    badge_separate: '独立 · 不影响数据库',
     btn_inspect_ddl: '查看 DDL',
     btn_upload_csv: '上传 CSV',
     csv_hint: '拖拽或点击上传 CSV 文件,首行为列名',
@@ -137,6 +140,8 @@ const i18n = {
     btn_saved: 'SAVED',
     btn_tableau: 'COPY FOR TABLEAU',
     btn_tableau_done: 'COPIED',
+    btn_export_csv: 'EXPORT CSV',
+    btn_export_sql: 'EXPORT SQL',
 
     label_sql: 'GENERATED SQL',
     label_result: 'RESULT',
@@ -156,6 +161,7 @@ const i18n = {
     err_profile: 'PROFILE FAILED',
     err_csv: 'CSV IMPORT FAILED',
     err_rate_limit: 'API 配额已用完 · Gemini 免费层限速 (10 RPM)。等 30 秒再试,或在 .env.local 升级到付费 key。',
+    err_overload: 'Gemini 服务端过载 · 这是 Google 那边临时 503。等 30 秒重试,或换用付费层 key 减轻影响。',
 
     btn_profile: 'GENERATE PROFILE',
     btn_profiling: 'ANALYZING',
@@ -176,7 +182,7 @@ const i18n = {
     workflow_sub: 'One pipeline covering all four JD bullets: data collection · cleaning · SQL queries · visualized reports. Each stage is a tab; all stages share the same in-browser SQLite engine.',
 
     collect_title: '01 / COLLECT — Data ingestion',
-    collect_sub: 'Not a sequential pipeline — three independent tools, use any or none. Two distinct purposes: [INTO DB · pick either] built-in seed (on by default) or CSV upload (optional extra table) — these two decide what QUERY can see. [STANDALONE TOOL] URL ingestion — fetches a page and produces NL→SQL training pairs as JSONL for fine-tuning, never inserted into the DB, unrelated to QUERY. All paths align to the same immutable DDL (4 layers, 10 tables).',
+    collect_sub: 'Not a pipeline — three independent capabilities. [DATABASE] built-in seed is ALWAYS ON; CSV is an OPTIONAL ADD-ON (not a replacement). Together they decide what QUERY can see. [TRAINING DATA EXPORT] URL ingestion is fully independent — output is a JSONL file, never inserted into the DB, unrelated to QUERY. All three align to the same immutable DDL (4 layers, 10 tables).',
     collect_loaded: 'Loaded',
     collect_layers: '4-layer warehouse',
     collect_layers_sub: 'DIM · DWD · DWS · ADS',
@@ -187,9 +193,12 @@ const i18n = {
     src_url_default: 'default: Kworb · Spotify Daily Global',
     src_url_set: 'current URL',
     schema_immutable_note: 'This DDL is fixed in the demo. All NL→SQL is generated against it. To swap it in production, also update the nl2sql prompt.',
-    group_db: 'A · INTO DB (pick either — determines what QUERY can see)',
-    group_db_or: 'OR',
-    group_training: 'B · TRAINING DATA EXPORT (standalone, never inserted, unrelated to QUERY)',
+    group_db: 'A · DATABASE CONTENTS (left = always on  +  right = optional add-on)',
+    group_db_plus: '+',
+    group_training: 'B · TRAINING DATA EXPORT (independent, output is JSONL, never enters the DB)',
+    badge_always_on: 'ALWAYS ON · cannot disable',
+    badge_optional: 'OPTIONAL · additive',
+    badge_separate: 'INDEPENDENT · does not affect the DB',
     btn_inspect_ddl: 'Inspect DDL',
     btn_upload_csv: 'Upload CSV',
     csv_hint: 'Drag or click to upload a CSV file. First row = headers.',
@@ -238,6 +247,8 @@ const i18n = {
     btn_generate: 'EXECUTE', btn_generating: 'GENERATING', btn_running: 'RUNNING',
     btn_run: 'RUN', btn_save: 'SAVE', btn_saved: 'SAVED',
     btn_tableau: 'COPY FOR TABLEAU', btn_tableau_done: 'COPIED',
+    btn_export_csv: 'EXPORT CSV',
+    btn_export_sql: 'EXPORT SQL',
 
     label_sql: 'GENERATED SQL', label_result: 'RESULT', label_chart: 'AUTO CHART', label_table: 'TABLE', rows_unit: 'ROWS',
 
@@ -250,6 +261,7 @@ const i18n = {
     err_run: 'EXECUTION FAILED', err_generate: 'GENERATION FAILED', err_profile: 'PROFILE FAILED',
     err_csv: 'CSV IMPORT FAILED',
     err_rate_limit: 'API quota exceeded · Gemini free tier is rate-limited (~10 RPM). Wait 30s and retry, or upgrade the key in .env.local.',
+    err_overload: 'Gemini upstream overload · this is a transient 503 from Google. Wait 30s and retry, or upgrade to a paid key.',
 
     btn_profile: 'GENERATE PROFILE', btn_profiling: 'ANALYZING',
     label_profile: 'BUSINESS PROFILE', label_ddl: 'DDL',
@@ -303,7 +315,12 @@ export default function Home() {
   const [tableauFlash, setTableauFlash] = useState(false)
 
   const [loading, setLoading] = useState<'profile' | 'gen' | 'run' | null>(null)
+  const [llmInfo, setLlmInfo] = useState<{ provider: string; model: string } | null>(null)
   const t = i18n[lang]
+
+  useEffect(() => {
+    fetch('/api/llm-info').then(r => r.json()).then(setLlmInfo).catch(() => {})
+  }, [])
 
   // Translate raw API errors into something the user can act on. The big one
   // we care about is 429 → friendly "API quota exceeded · wait 30s" message,
@@ -312,6 +329,9 @@ export default function Home() {
     const msg = e instanceof Error ? e.message : String(e)
     if (msg.includes('429') || msg.includes('RATE_LIMITED') || /quota|rate[- ]?limit/i.test(msg)) {
       return t.err_rate_limit
+    }
+    if (msg.includes('503') || msg.includes('UPSTREAM_OVERLOAD') || /overload|unavailable/i.test(msg)) {
+      return t.err_overload
     }
     return msg
   }
@@ -469,6 +489,45 @@ export default function Home() {
     })
   }
 
+  function downloadBlob(content: string, mime: string, filename: string) {
+    const blob = new Blob([content], { type: mime })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = filename
+    a.click()
+    URL.revokeObjectURL(a.href)
+  }
+
+  // CSV escape per RFC 4180: wrap in double quotes if value contains comma /
+  // quote / newline; double-quote any embedded quote.
+  function csvCell(v: unknown): string {
+    if (v == null) return ''
+    const s = String(v)
+    return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+  }
+
+  function exportCsv() {
+    if (!result) return
+    const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
+    const lines = [
+      result.columns.map(csvCell).join(','),
+      ...result.rows.map(row => row.map(csvCell).join(',')),
+    ]
+    downloadBlob(lines.join('\n') + '\n', 'text/csv;charset=utf-8', `cadence-result-${ts}.csv`)
+  }
+
+  function exportSql() {
+    if (!sql) return
+    const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
+    const header =
+      `-- Cadence-generated SQL\n` +
+      `-- Generated at: ${new Date().toISOString()}\n` +
+      `-- Question: ${question}\n` +
+      (explanation ? `-- ${explanation}\n` : '') +
+      `-- Dialect: SQLite (demo). For Postgres/MySQL/BigQuery adjust date() syntax.\n\n`
+    downloadBlob(header + sql + '\n', 'application/sql', `cadence-query-${ts}.sql`)
+  }
+
   function deleteReport(id: string) { setReports(prev => prev.filter(r => r.id !== id)) }
   function loadReport(r: Report) {
     setQuestion(r.question); setSql(r.sql); setExplanation(r.explanation ?? '')
@@ -561,15 +620,18 @@ export default function Home() {
               {t.group_db}
             </div>
             <div className="relative grid lg:grid-cols-2 gap-4">
-              {/* OR divider — only visible on lg+ where the two cards sit side-by-side */}
-              <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 items-center justify-center w-8 h-8 bg-void-900 border border-steel-700 rounded-full font-mono text-10 font-bold tracking-widest text-steel-400">
-                {t.group_db_or}
+              {/* "+" divider — additive, NOT exclusive. seed is always on; CSV stacks on top of it. */}
+              <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 items-center justify-center w-8 h-8 bg-void-900 border border-blueprint-500 rounded-full font-mono text-14 font-bold tracking-widest text-blueprint-500">
+                {t.group_db_plus}
               </div>
               {/* Pre-loaded warehouse panel */}
               <Card>
                 <div className="flex items-center justify-between px-4 py-2 border-b border-steel-700">
                   <div className="inline-flex items-center gap-2 font-mono text-10 font-bold tracking-[0.18em] text-blueprint-500">
                     <Database className="w-3 h-3" /> {t.collect_layers}
+                    <span className="inline-flex items-center gap-1 ml-1 px-1.5 py-0.5 border border-signal-500/40 bg-signal-500/5 text-signal-500 normal-case tracking-normal font-bold">
+                      🔒 {t.badge_always_on}
+                    </span>
                   </div>
                   <button onClick={() => setSchemaOpen(o => !o)} className="inline-flex items-center gap-1.5 px-3 py-1 border border-steel-600 hover:border-blueprint-500 font-mono text-10 font-bold tracking-widest text-steel-100 hover:text-blueprint-500 transition-colors">
                     {schemaOpen ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
@@ -605,6 +667,9 @@ export default function Home() {
               <Card>
                 <div className="flex items-center px-4 py-2 border-b border-steel-700 font-mono text-10 font-bold tracking-[0.18em] text-blueprint-500">
                   <Upload className="w-3 h-3 mr-2" /> {t.btn_upload_csv}
+                  <span className="inline-flex items-center gap-1 ml-2 px-1.5 py-0.5 border border-caution-500/40 bg-caution-500/5 text-caution-500 normal-case tracking-normal font-bold">
+                    + {t.badge_optional}
+                  </span>
                 </div>
                 <div className="px-5 pt-4 font-mono text-10 text-steel-500 tracking-[0.18em] flex items-center gap-2">
                   <span>{t.src_label}</span>
@@ -667,8 +732,14 @@ export default function Home() {
               </Card>
             </div>
 
+            {/* Hard divider between groups so they don't read as sequential steps */}
+            <div className="my-8 flex items-center gap-3">
+              <div className="flex-1 h-px bg-steel-700" />
+              <span className="font-mono text-10 text-steel-500 tracking-[0.24em] px-2">━━ 平行,不连续 ━━</span>
+              <div className="flex-1 h-px bg-steel-700" />
+            </div>
             {/* Group B — TRAINING DATA EXPORT (standalone) */}
-            <div className="font-mono text-10 font-bold tracking-[0.18em] text-blueprint-500 mt-8 mb-2 flex items-center gap-2">
+            <div className="font-mono text-10 font-bold tracking-[0.18em] text-blueprint-500 mb-2 flex items-center gap-2">
               <span className="inline-block w-1 h-1 bg-blueprint-500" />
               {t.group_training}
             </div>
@@ -676,14 +747,35 @@ export default function Home() {
             <Card className="mt-0">
               <div className="flex items-center px-4 py-2 border-b border-steel-700 font-mono text-10 font-bold tracking-[0.18em] text-blueprint-500">
                 <Link2 className="w-3 h-3 mr-2" /> {t.url_title}
+                <span className="inline-flex items-center gap-1 ml-2 px-1.5 py-0.5 border border-steel-600 bg-void-950 text-steel-300 normal-case tracking-normal font-bold">
+                  ⇢ {t.badge_separate}
+                </span>
               </div>
               <div className="p-5">
                 <div className="font-mono text-10 text-steel-500 tracking-[0.18em] mb-3 flex items-center gap-2">
                   <span>{t.src_label}</span>
                   <span className={`inline-block w-1 h-1 rounded-full ${url.trim() ? 'bg-blueprint-500' : 'bg-steel-600'}`} />
-                  <span className="text-blueprint-500 normal-case tracking-normal truncate">
-                    {url.trim() ? `${t.src_url_set} · ${url.trim()}` : t.src_url_default}
-                  </span>
+                  {url.trim() ? (
+                    <span className="normal-case tracking-normal truncate flex items-center gap-1 min-w-0">
+                      <span className="text-steel-500 shrink-0">{t.src_url_set} ·</span>
+                      {/^https?:\/\//i.test(url.trim()) ? (
+                        <a
+                          href={url.trim()}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blueprint-500 hover:text-blueprint-300 underline decoration-blueprint-500/40 hover:decoration-blueprint-300 underline-offset-2 truncate inline-flex items-center gap-1"
+                          title={url.trim()}
+                        >
+                          {url.trim()}
+                          <ArrowRight className="w-2.5 h-2.5 -rotate-45 shrink-0" />
+                        </a>
+                      ) : (
+                        <span className="text-caution-500 truncate" title="需要 http:// 或 https:// 前缀才能跳转">{url.trim()}</span>
+                      )}
+                    </span>
+                  ) : (
+                    <span className="text-blueprint-500 normal-case tracking-normal truncate">{t.src_url_default}</span>
+                  )}
                 </div>
                 <p className="font-mono text-11 text-steel-400 leading-relaxed mb-3">{t.url_sub}</p>
 
@@ -719,14 +811,25 @@ export default function Home() {
                     {urlLoading ? <><Loader2 className="w-3 h-3 animate-spin" />{t.btn_url_ingesting}</> : <><Brain className="w-3 h-3" />{t.btn_url_ingest}</>}
                   </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setUrl(SAMPLE_URL)}
-                  className="mt-2 inline-flex items-center gap-1.5 font-mono text-10 text-steel-500 hover:text-blueprint-500 tracking-wider transition-colors"
-                >
-                  <Sparkles className="w-3 h-3" />{t.url_try_sample}
-                  <span className="text-steel-600 truncate">→ {SAMPLE_URL}</span>
-                </button>
+                <div className="mt-2 flex items-center gap-2 font-mono text-10 tracking-wider">
+                  <button
+                    type="button"
+                    onClick={() => setUrl(SAMPLE_URL)}
+                    className="inline-flex items-center gap-1.5 text-steel-500 hover:text-blueprint-500 transition-colors"
+                  >
+                    <Sparkles className="w-3 h-3" />{t.url_try_sample}
+                  </button>
+                  <span className="text-steel-700">·</span>
+                  <a
+                    href={SAMPLE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-blueprint-500 hover:text-blueprint-300 underline decoration-blueprint-500/40 hover:decoration-blueprint-300 underline-offset-2 truncate"
+                  >
+                    {SAMPLE_URL}
+                    <ArrowRight className="w-3 h-3 -rotate-45 shrink-0" />
+                  </a>
+                </div>
               </div>
               {urlIngest && (
                 <div className="border-t border-steel-700 bg-void-950/40">
@@ -955,6 +1058,12 @@ export default function Home() {
                       <TerminalBtn onClick={copyForTableau} disabled={!sql} active={tableauFlash}>
                         {tableauFlash ? <><Check className="w-3 h-3" />{t.btn_tableau_done}</> : <><Copy className="w-3 h-3" />{t.btn_tableau}</>}
                       </TerminalBtn>
+                      <TerminalBtn onClick={exportCsv} disabled={!result || result.rowCount === 0}>
+                        <Download className="w-3 h-3" />{t.btn_export_csv}
+                      </TerminalBtn>
+                      <TerminalBtn onClick={exportSql} disabled={!sql}>
+                        <FileText className="w-3 h-3" />{t.btn_export_sql}
+                      </TerminalBtn>
                     </div>
                   </div>
                   <div className="relative scanline">
@@ -1069,7 +1178,9 @@ export default function Home() {
           <div className="font-mono text-10 text-steel-500 tracking-widest">
             <span className="text-blueprint-500">▎</span> {t.footer_left}
           </div>
-          <div className="font-mono text-10 text-steel-500 tracking-widest">{t.footer_right}</div>
+          <div className="font-mono text-10 text-steel-500 tracking-widest">
+            {llmInfo ? `${llmInfo.model.toUpperCase()} · ${llmInfo.provider.toUpperCase()} · SQL.JS · RECHARTS` : t.footer_right}
+          </div>
         </div>
       </footer>
     </main>
